@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fetch - promise</title>
+  <script type="text/javascript">
+    function getData(campaignId, topicId, callback) {
+      if (window.Promise && window.fetch && window.Symbol) {
+        fetchAPI(campaignId, topicId, callback);
+      } else {
+        var js = document.createElement('script');
+        js.src = "./promise-polyfill_whatwg-fetch.js";
+        js.onload = function() {
+          fetchAPI(campaignId, topicId, callback);
+        };
+        js.onerror = function() {
+          console.error("Failed to load script")
+        };
+        document.head.appendChild(js);
+      }
+    }
+    function fetchAPI(callback) {
+      fetch("https://reqres.in/api/users?page=2")
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(dataJson) {
+          if (dataJson.data) {
+            return dataJson.data
+          }
+          return null;
+        })
+        .then(callback)
+    }
+  </script>
+</head>
+<body>
+  <!-- html tag here -->
+  <script type="text/javascript">
+    // demo
+    getData(function(data) {
+      console.log(data);
+    })
+  </script>
+</body>
+</html>
